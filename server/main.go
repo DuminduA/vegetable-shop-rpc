@@ -10,15 +10,12 @@ import (
 )
 
 func main() {
-	dat, err := ioutil.ReadFile("server/resources/database.txt")
+	//read the file
+	//dat, err := ioutil.ReadFile("server/resources/database.txt")
 
-	fmt.Println(err)
-	fmt.Print(string(dat))
+	//initialized the server as in the reference https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9
+	shop := common.NewShop()
 
-	// create a `*College` object
-	shop := common.NewCollege()
-
-	// register `mit` object with `rpc.DefaultServer`
 	rpc.Register(shop)
 
 	// register an HTTP handler for RPC communication on `http.DefaultServeMux` (default)
@@ -68,4 +65,3 @@ func UpdatePriceByName(Name string, Price float32) (vegeSaved common.Vegetable, 
 func UpdateAvailableTotalByName(Name string, Price float32) (vegeSaved common.Vegetable, err error) {
 	return common.Vegetable{}, err
 }
-
