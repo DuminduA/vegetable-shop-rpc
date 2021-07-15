@@ -75,8 +75,11 @@ func (vc VegetableController) AddNewVegetable(w http.ResponseWriter, r *http.Req
 	//Add new vege
 	if err := client.Call("Shop.AddNewVegetable", v, &veg); err != nil {
 		fmt.Println("Error: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		fmt.Println(veg.Price)
+		encodeResponseAsJSON(veg, w)
 	}
 }
 
@@ -99,8 +102,11 @@ func (vc VegetableController) UpdatePrice(w http.ResponseWriter, r *http.Request
 		Price: v.Price,
 	}, &priceDto); err != nil {
 		fmt.Println("Error: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		fmt.Println(priceDto)
+		encodeResponseAsJSON(priceDto, w)
 	}
 }
 
@@ -123,8 +129,11 @@ func (vc VegetableController) UpdateAmount(w http.ResponseWriter, r *http.Reques
 		Name:  v.Name,
 	}, &totalDto); err != nil {
 		fmt.Println("Error: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		fmt.Println(totalDto)
+		encodeResponseAsJSON(totalDto, w)
 	}
 }
 
@@ -136,8 +145,11 @@ func (vc VegetableController) GetPrice(w http.ResponseWriter, r *http.Request) {
 	//Get Price
 	if err := client.Call("Shop.GetPriceByName", r.FormValue("name"), &price); err != nil {
 		fmt.Println("Error: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		fmt.Println(price)
+		encodeResponseAsJSON(price, w)
 	}
 }
 
@@ -149,8 +161,11 @@ func (vc VegetableController) GetAmount(w http.ResponseWriter, r *http.Request) 
 	//Get available total
 	if err := client.Call("Shop.GetAvailableTotalByName", r.FormValue("name"), &availableAmount); err != nil {
 		fmt.Println("Error: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	} else {
 		fmt.Println(availableAmount)
+		encodeResponseAsJSON(availableAmount, w)
 	}
 }
 

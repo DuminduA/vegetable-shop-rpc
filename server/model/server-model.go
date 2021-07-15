@@ -106,7 +106,7 @@ func (s *Shop) UpdateAvailableTotalByName(payload TotalUpdateDto, result *TotalU
 	if current == nil {
 		return errors.New("vegetable with this name is does not exist")
 	}
-	current.Price = payload.Total
+	current.AvailableTotal = payload.Total
 	s.vegetables[payload.Name] = current
 	*result = TotalUpdateDto{Name: payload.Name, Total: payload.Total}
 	return nil
