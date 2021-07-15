@@ -48,7 +48,7 @@ func (s *Shop) GetAllNames(payload string, result *[]string) error {
 		allNames = append(allNames, idx)
 	}
 
-	result = &allNames
+	*result = allNames
 	return nil
 }
 
@@ -59,7 +59,7 @@ func (s *Shop) GetPriceByName(name string, result *float32) error {
 		return errors.New("vegetable with this name is does not exist")
 	}
 
-	result = &current.Price
+	*result = current.Price
 	return nil
 }
 
@@ -70,7 +70,7 @@ func (s *Shop) GetAvailableTotalByName(name string, result *float32) error {
 		return errors.New("vegetable with this name is does not exist")
 	}
 
-	result = &current.AvailableTotal
+	*result = current.AvailableTotal
 	return nil
 }
 
@@ -79,33 +79,36 @@ func (s *Shop) AddNewVegetable(vegetable Vegetable, result *Vegetable) error {
 
 	if current == nil {
 		s.vegetables[vegetable.Name] = &vegetable
-		result = s.vegetables[vegetable.Name]
+		*result = vegetable
+		return nil
 	}
 
-	return errors.New("vegetable with this name is does not exist")
+	return errors.New("vegetable with this name is exists")
 
 }
 
-func (s *Shop) UpdatePriceByName(payload PriceUpdateDto, result *Vegetable) error {
-	current := s.vegetables[payload.name]
+func (s *Shop) UpdatePriceByName(payload PriceUpdateDto, result *PriceUpdateDto) error {
+	current := s.vegetables[payload.Name]
 
 	if current == nil {
 		return errors.New("vegetable with this name is does not exist")
 	}
-	current.Price = payload.price
-	result = s.vegetables[payload.name]
+	current.Price = payload.Price
+	s.vegetables[payload.Name] = current
+	*result = PriceUpdateDto{Name: payload.Name, Price: payload.Price}
 	return nil
 
 }
 
-func (s *Shop) UpdateAvailableTotalByName(payload TotalUpdateDto, result *Vegetable) error {
-	current := s.vegetables[payload.name]
+func (s *Shop) UpdateAvailableTotalByName(payload TotalUpdateDto, result *TotalUpdateDto) error {
+	current := s.vegetables[payload.Name]
 
 	if current == nil {
 		return errors.New("vegetable with this name is does not exist")
 	}
-	current.Price = payload.total
-	result = s.vegetables[payload.name]
+	current.Price = payload.Total
+	s.vegetables[payload.Name] = current
+	*result = TotalUpdateDto{Name: payload.Name, Total: payload.Total}
 	return nil
 }
 
@@ -116,11 +119,11 @@ func (s *Shop) UpdateAvailableTotalByName(payload TotalUpdateDto, result *Vegeta
 */
 
 type PriceUpdateDto struct {
-	name  string
-	price float32
+	Name  string
+	Price float32
 }
 
 type TotalUpdateDto struct {
-	name  string
-	total float32
+	Name  string
+	Total float32
 }

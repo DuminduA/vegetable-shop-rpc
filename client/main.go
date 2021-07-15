@@ -2,44 +2,69 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"vegetable-shop-rpc/common"
+	"net/rpc"
+	common "vegetable-shop-rpc/client/model"
 )
 
 func main() {
+	var veg common.Vegetable
+	var allVeg []string
+	var availableAmount float32
+	var price float32
+	var priceDto common.PriceUpdateDto
+	var totalDto common.TotalUpdateDto
 
-}
+	vegeName := "cucumber"
 
-func check(e error) {
-	if e != nil {
-		panic(e)
+	// get RPC client by dialing at `rpc.DefaultRPCPath` endpoint
+	client, _ := rpc.DialHTTP("tcp", "127.0.0.1:9000") // or `localhost:9000`
+
+	//Add new vege
+	if err := client.Call("Shop.AddNewVegetable", common.Vegetable{Name: vegeName, Price: 15.3, AvailableTotal: 56}, &veg); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(veg.Price)
 	}
-}
 
-func GetAllNames() []common.Vegetable {
-	dat, err := ioutil.ReadFile("server/resources/database.txt")
-	check(err)
-	fmt.Print(string(dat))
+	//Get available total
+	if err := client.Call("Shop.GetAvailableTotalByName", vegeName, &availableAmount); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(availableAmount)
+	}
 
-	return nil
-}
+	//Get Price
+	if err := client.Call("Shop.GetPriceByName", vegeName, &price); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(price)
+	}
 
-func GetPriceByName(Name string) (Price float32, err error) {
-	return 0, err
-}
+	//Update available total
+	if err := client.Call("Shop.UpdateAvailableTotalByName", common.TotalUpdateDto{
+		Total: 56,
+		Name:  vegeName,
+	}, &totalDto); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(totalDto)
+	}
 
-func GetAvailableTotalByName(Name string) (Price float32, err error) {
-	return 0, err
-}
+	//Get Price
+	if err := client.Call("Shop.UpdatePriceByName", common.PriceUpdateDto{
+		Name:  vegeName,
+		Price: 89.7,
+	}, &priceDto); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(priceDto)
+	}
 
-func AddNewVegetable(vege common.Vegetable) (vegeSaved common.Vegetable, err error) {
-	return common.Vegetable{}, err
-}
+	//Get All items
+	if err := client.Call("Shop.GetAllNames", "", &allVeg); err != nil {
+		fmt.Println("Error: ", err)
+	} else {
+		fmt.Println(allVeg)
+	}
 
-func UpdatePriceByName(Name string, Price float32) (vegeSaved common.Vegetable, err error) {
-	return common.Vegetable{}, err
-}
-
-func UpdateAvailableTotalByName(Name string, Price float32) (vegeSaved common.Vegetable, err error) {
-	return common.Vegetable{}, err
 }
