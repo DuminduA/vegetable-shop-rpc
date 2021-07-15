@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"net/rpc"
+	"vegetable-shop-rpc/client/controller"
 	common "vegetable-shop-rpc/client/model"
 )
 
@@ -66,5 +68,8 @@ func main() {
 	} else {
 		fmt.Println(allVeg)
 	}
+
+	controller.RegisterControllers()
+	http.ListenAndServe(":3030", nil)
 
 }
